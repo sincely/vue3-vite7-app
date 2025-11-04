@@ -1,0 +1,23 @@
+// 单行溢出
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 多行溢出
+.text-multiple-ellipsis {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-clamp: 2; // 这个值可以随便设置，比如这里的2就是最多显示两行，两行后出现省略号
+}
+
+// 文字或者数字一行显示换行处理
+.text-number-break {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  white-space: normal;
+}

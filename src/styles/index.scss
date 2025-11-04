@@ -1,0 +1,61 @@
+@use './text-ellipsis'; // 文字溢出样式
+@use './scroll'; // 通用样式
+@use './transition'; // 动画样式
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden; // 设置外部overflow为hidden,设置内容元素overflow为auto。内部元素超出body即产生滚动，超出的部分body隐藏。
+  font-family: Roboto, sans-serif !important;
+
+  // 通用样式类
+  .flex {
+    display: flex;
+  }
+
+  .flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  // 固定宽度容器
+  .container {
+    width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+// 通用样式类
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// 固定宽度容器
+.container {
+  width: 1200px;
+  margin: 0 auto;
+}

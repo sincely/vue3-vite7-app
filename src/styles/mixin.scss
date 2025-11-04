@@ -1,0 +1,48 @@
+/**
+ *  flex方法
+ */
+@mixin flex($justify: center, $align: center) {
+  display: flex;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+// 文本溢出省略号
+@mixin ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 多行文本溢出省略号
+@mixin multi-ellipsis($lines) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $lines;
+  overflow: hidden;
+}
+
+// 响应式媒体查询
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == xs {
+    @media (max-width: $screen-xs) {
+      @content;
+    }
+  } @else if $breakpoint == sm {
+    @media (max-width: $screen-sm) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @media (max-width: $screen-md) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @media (max-width: $screen-lg) {
+      @content;
+    }
+  } @else if $breakpoint == xl {
+    @media (max-width: $screen-xl) {
+      @content;
+    }
+  }
+}

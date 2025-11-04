@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+# 使用npx运行commitlint进行commit信息检查
+npx --no-install commitlint --edit "$1"
+
+# 如果 commitlint 检查通过，则添加 emoji
+if [ $? -eq 0 ]; then
+ node "$(dirname "$0")/../scripts/update-commit-msg.js" "$1"
+fi
