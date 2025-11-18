@@ -5,8 +5,7 @@
       "type": "chrome",
       "request": "launch",
       "name": "Vue Debugger",
-      // Ensure this URL matches the dev server port
-      "url": "http://localhost:9527",
+      "url": "http://localhost:5173",
       "webRoot": "${workspaceFolder}"
     }
   ]
