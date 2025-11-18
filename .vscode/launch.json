@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Vue Debugger",
+      // Ensure this URL matches the dev server port
+      "url": "http://localhost:9527",
+      "webRoot": "${workspaceFolder}"
+    }
+  ]
+}
