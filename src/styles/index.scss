@@ -12,6 +12,7 @@ body {
   height: 100%;
   overflow-y: hidden; // 设置外部overflow为hidden,设置内容元素overflow为auto。内部元素超出body即产生滚动，超出的部分body隐藏。
   font-family: Roboto, sans-serif !important;
+  background-color: $red;
 
   // 通用样式类
   .flex {
@@ -58,4 +59,8 @@ body {
 .container {
   width: 1200px;
   margin: 0 auto;
+}
+
+.content {
+  background-color: $theme;
 }

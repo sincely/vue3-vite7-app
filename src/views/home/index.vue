@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="content">
     <el-button type="primary">11</el-button>
     <el-row>11111111</el-row>
     <el-button @click="handle">11111111111</el-button>
