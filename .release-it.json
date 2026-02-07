@@ -1,0 +1,114 @@
+{
+  "git": {
+    "commitMessage": "chore: v${version}",
+    "tagName": "v${version}",
+    "tagAnnotation": "v${version}",
+    "requireCleanWorkingDir": true,
+    "requireBranch": "main",
+    "requireUpstream": true,
+    "requireCommits": true,
+    "addUntrackedFiles": false,
+    "push": true,
+    "pushArgs": [
+      "--follow-tags"
+    ]
+  },
+  "github": {
+    "release": true,
+    "releaseName": "v${version}",
+    "tokenRef": "GITHUB_TOKEN",
+    "assets": [
+      "dist/*.zip",
+      "dist/*.tar.gz",
+      "CHANGELOG.md",
+      "README.md"
+    ],
+    "draft": false,
+    "preRelease": false,
+    "proxy": null
+  },
+  "npm": {
+    "publish": false,
+    "versionArgs": [
+      "--workspaces-update=false"
+    ],
+    "ignoreVersion": false
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": {
+        "name": "conventionalcommits",
+        "types": [
+          {
+            "type": "init",
+            "section": "🎉 init"
+          },
+          {
+            "type": "feat",
+            "section": "✨ Features"
+          },
+          {
+            "type": "fix",
+            "section": "🐞 Bug Fixes"
+          },
+          {
+            "type": "perf",
+            "section": "⚡ Performance Improvements"
+          },
+          {
+            "type": "revert",
+            "section": "💫 Reverts"
+          },
+          {
+            "type": "docs",
+            "section": "📝 Documentation"
+          },
+          {
+            "type": "style",
+            "section": "🎨 Styles"
+          },
+          {
+            "type": "chore",
+            "section": "🔧 Chores"
+          },
+          {
+            "type": "refactor",
+            "section": "♻️ Code Refactoring"
+          },
+          {
+            "type": "test",
+            "section": "🧪 Tests"
+          },
+          {
+            "type": "build",
+            "section": "🏭 Build System"
+          },
+          {
+            "type": "ci",
+            "section": "🤖 Continuous Integration"
+          },
+          {
+            "type": "release",
+            "section": "🚀 Releases"
+          }
+        ]
+      },
+      "infile": "CHANGELOG.md",
+      "header": "# Changelog\n\nAll notable changes to this project will be documented in this file.\n",
+      "ignoreRecommendedBump": false,
+      "strictSemVer": true
+    }
+  },
+  "hooks": {
+    "before:init": [
+      "npm run lint"
+    ],
+    "after:bump": [
+      "npm run build:production"
+    ],
+    "after:git:release": "echo 'Git release completed successfully!'",
+    "before:github:release": "echo 'Creating GitHub release...'",
+    "after:github:release": "echo 'GitHub release created successfully!'",
+    "after:release": "echo 'Release v${version} completed successfully!'"
+  }
+}
