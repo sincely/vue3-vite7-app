@@ -11,6 +11,7 @@
     "serve": "vite --mode development",
     "build:test": "VITE_CJS_IGNORE_WARNING=true vite build --mode test",
     "build:production": "VITE_CJS_IGNORE_WARNING=true vite build --mode production",
+    "lint": "eslint \"src/**/*.{vue,js}\" --fix",
     "eslint:fix": "eslint \"src/**/*.{vue,js}\" --fix",
     "prettier:fix": "prettier --write \"src/**/*.{js,vue,scss,css,json,html}\"",
     "stylelint:fix": "stylelint \"**/*.{html,vue,css,scss}\" --fix",
