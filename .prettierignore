@@ -20,3 +20,5 @@ src/**/*.d.ts
 .editorconfig
 pnpm-lock.yaml
 .npmrc
+
+.trae
