@@ -1,7 +1,10 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 import layouts from '@/layouts/index.vue'
 import home from '@/views/home/index.vue'
+import { useUserStore } from '@/store/modules/user'
 
 const files = import.meta.glob('./modules/*.js', {
   eager: true
@@ -21,6 +24,15 @@ const asyncRouterList = [...routeModuleList]
 
 // 存放固定路由
 const defaultRouterList = [
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/login/index.vue'),
+    meta: {
+      title: '登录',
+      keepAlive: false
+    }
+  },
   {
     path: '/',
     component: layouts,
@@ -50,6 +62,46 @@ const router = createRouter({
       behavior: 'smooth'
     }
   }
+})
+
+// 白名单
+const whiteList = ['/login', '/404']
+
+router.beforeEach(async (to, from, next) => {
+  NProgress.start()
+  const userStore = useUserStore()
+  const { token } = userStore
+
+  if (token) {
+    if (to.path === '/login') {
+      next({ path: '/' })
+      NProgress.done()
+    } else {
+      if (userStore.userInfo) {
+        next()
+      } else {
+        try {
+          await userStore.getUserInfoAction()
+          next({ ...to, replace: true })
+        } catch (error) {
+          userStore.resetUserState()
+          next(`/login?redirect=${to.path}`)
+          NProgress.done()
+        }
+      }
+    }
+  } else {
+    if (whiteList.includes(to.path)) {
+      next()
+    } else {
+      next(`/login?redirect=${to.path}`)
+      NProgress.done()
+    }
+  }
+})
+
+router.afterEach(() => {
+  NProgress.done()
 })
 
 export function resetRouter() {
