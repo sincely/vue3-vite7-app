@@ -1,0 +1,35 @@
+# =============================================================
+# Dockerfile.dev —— 开发环境镜像
+# 启动 Vite 开发服务器，源码通过 Volume 挂载触发热更新（HMR）
+# 构建：docker build -f Dockerfile.dev -t vue3-vite7-app:dev .
+# 运行：pnpm docker:run:dev
+# =============================================================
+ARG NODE_VERSION=22-alpine
+FROM node:${NODE_VERSION}
+
+# 设置工作目录
+WORKDIR /app
+
+# 安装 pnpm
+RUN npm install -g pnpm@latest --registry=https://registry.npmmirror.com
+
+# 优先复制依赖声明文件，利用层缓存
+# Volume 挂载会覆盖源码，但 node_modules 由此层提供
+COPY package.json pnpm-lock.yaml ./
+
+# 安装所有依赖（含 devDependencies）
+RUN pnpm install --frozen-lockfile --registry=https://registry.npmmirror.com
+
+# 复制源码（生产 Volume 挂载后会被覆盖，此步保证镜像独立可用）
+COPY . .
+
+# 暴露 Vite 开发服务器端口
+EXPOSE 5173
+
+# 健康检查
+HEALTHCHECK --interval=20s --timeout=10s --start-period=30s --retries=3 \
+    CMD wget -qO- http://localhost:5173/ || exit 1
+
+# 启动 Vite 开发服务器
+# --host 0.0.0.0 让容器外部可访问
+CMD ["pnpm", "run", "serve", "--", "--host", "0.0.0.0"]

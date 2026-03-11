@@ -13,6 +13,8 @@ export default defineConfig(({ mode, command }) => {
       strictPort: false, // 设为false时，若端口已被占用则会尝试下一个可用端口,而不是直接退出
       open: true, // 在服务器启动时自动在浏览器中打开应用程序
       port: 5173, // 指定服务器端口
+      // Docker 容器内需监听 0.0.0.0，否则容器外无法访问
+      host: '0.0.0.0',
       proxy: proxyServer, // 本地跨域代理-> 代理到服务器的接口地址
       warmup: {
         // 预热的客户端文件：首页、views、 components

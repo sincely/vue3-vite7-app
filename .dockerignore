@@ -1,0 +1,49 @@
+# 依赖目录
+node_modules
+.pnpm-store
+
+# 构建产物
+dist
+
+# Git 相关
+.git
+.gitignore
+.gitattributes
+
+# 编辑器配置
+.vscode
+.idea
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志文件
+*.log
+logs/
+
+# 测试文件
+coverage/
+*.spec.js
+*.test.js
+
+# 文档（Docker 内不需要）
+*.md
+!README.md
+
+# 环境变量示例文件（实际 .env 按需保留）
+.env.local
+.env.*.local
+
+# Husky git hooks
+.husky
+
+# lint 缓存
+.eslintcache
+.stylelintcache
+
+# 临时文件
+tmp/
+temp/

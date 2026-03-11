@@ -25,7 +25,18 @@
     "release:minor": "release-it minor",
     "release:major": "release-it major",
     "release:alpha": "release-it --preRelease=alpha",
-    "release:beta": "release-it --preRelease=beta"
+    "release:beta": "release-it --preRelease=beta",
+    "docker:build:dev": "docker build -f Dockerfile.dev -t vue3-vite7-app:dev .",
+    "docker:build:test": "docker build --build-arg BUILD_MODE=test -t vue3-vite7-app:test .",
+    "docker:build:prod": "docker build --build-arg BUILD_MODE=production -t vue3-vite7-app:prod .",
+    "docker:run:dev": "docker run -it --rm -p 5173:5173 -v \"%cd%:/app\" -v /app/node_modules -e TZ=Asia/Shanghai -e VITE_CJS_IGNORE_WARNING=true -e NODE_ENV=development --name vue3-vite7-app-dev vue3-vite7-app:dev",
+    "docker:run:test": "docker run -d --rm -p 8080:80 -e TZ=Asia/Shanghai --name vue3-vite7-app-test vue3-vite7-app:test",
+    "docker:run:prod": "docker run -d -p 80:80 -e TZ=Asia/Shanghai --restart=unless-stopped --name vue3-vite7-app-prod vue3-vite7-app:prod",
+    "docker:stop:dev": "docker stop vue3-vite7-app-dev",
+    "docker:stop:test": "docker stop vue3-vite7-app-test",
+    "docker:stop:prod": "docker stop vue3-vite7-app-prod",
+    "docker:logs:test": "docker logs -f vue3-vite7-app-test",
+    "docker:logs:prod": "docker logs -f vue3-vite7-app-prod"
   },
   "dependencies": {
     "@element-plus/icons-vue": "2.3.2",
