@@ -1,0 +1,3 @@
+@echo off
+echo Let's start building Docker images...
+node export-image.js

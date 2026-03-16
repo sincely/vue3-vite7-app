@@ -11,7 +11,7 @@ ARG NGINX_VERSION=alpine
 # =============================================================
 FROM node:${NODE_VERSION} AS builder
 
-# 设置工作目录
+# 创建工作目录（类似在服务器上建一个专门的文件夹放代码）
 WORKDIR /app
 
 # 安装 pnpm（版本与 package.json engines 字段保持一致）
@@ -59,7 +59,7 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 RUN chown -R nginx:nginx /usr/share/nginx/html \
     && chmod -R 755 /usr/share/nginx/html
 
-# 暴露端口
+# EXPOSE不会实际开放端口，单纯的语法，不写也行（NGINX默认就是80端口）
 EXPOSE 80
 
 # 健康检查：每 30 秒检测一次，确保 Nginx 正常响应
