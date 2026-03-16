@@ -29,6 +29,7 @@ RUN pnpm install --frozen-lockfile --registry=https://registry.npmmirror.com
 COPY . .
 
 # 构建参数：通过 --build-arg 指定打包模式（默认 production）
+#
 ARG BUILD_MODE=production
 
 # 执行构建，产物输出到 /app/dist
@@ -52,10 +53,10 @@ RUN rm -f /etc/nginx/conf.d/default.conf /etc/nginx/nginx.conf
 # 复制自定义 Nginx 配置
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
-# 从构建阶段复制编译产物到 Nginx 静态资源目录
+# 从构建阶段复制编译产物到Nginx静态资源目录
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# 确保 Nginx 日志目录权限正确（可选，Alpine 下 nginx 用户已有权限）
+# 确保Nginx日志目录权限正确（可选Alpine下nginx用户已有权限）
 RUN chown -R nginx:nginx /usr/share/nginx/html \
     && chmod -R 755 /usr/share/nginx/html
 
