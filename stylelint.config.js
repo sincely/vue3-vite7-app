@@ -11,7 +11,7 @@ export default {
   ],
   rules: {
     'max-nesting-depth': 3, // 样式最大嵌套层数，总共最多3层
-    // 禁止在覆盖高特异性选择器之后出现低特异性选择器
+    // 禁止在具有较高优先级的选择器后出现被其覆盖的较低优先级的选择器
     'no-descending-specificity': null,
     // 禁止空源码
     'no-empty-source': null,
@@ -62,8 +62,9 @@ export default {
       }
     ]
   },
-  ignoreFiles: ['**/*.js', '**/*.jsx', '**/*.tsx', '**/*.ts'],
+  ignoreFiles: ['**/*.js', '**/*.ts', '**/*.jsx', '**/*.tsx', '**/*.json', '**/*.md', '**/*.yml', '**/*.yaml'],
   overrides: [
+    // 扫描 .vue/html 文件中的<style>标签内的样式
     {
       files: ['**/*.(css|html|vue)'],
       customSyntax: 'postcss-html',
