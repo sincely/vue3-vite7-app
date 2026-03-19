@@ -9,29 +9,20 @@
     "requireCommits": true,
     "addUntrackedFiles": false,
     "push": true,
-    "pushArgs": [
-      "--follow-tags"
-    ]
+    "pushArgs": ["--follow-tags"]
   },
   "github": {
     "release": true,
     "releaseName": "v${version}",
     "tokenRef": "GITHUB_TOKEN",
-    "assets": [
-      "dist/*.zip",
-      "dist/*.tar.gz",
-      "CHANGELOG.md",
-      "README.md"
-    ],
+    "assets": ["dist/*.zip", "dist/*.tar.gz", "artifacts/*.tar", "CHANGELOG.md", "README.md"],
     "draft": false,
     "preRelease": false,
     "proxy": null
   },
   "npm": {
     "publish": false,
-    "versionArgs": [
-      "--workspaces-update=false"
-    ],
+    "versionArgs": ["--workspaces-update=false"],
     "ignoreVersion": false
   },
   "plugins": {
@@ -100,12 +91,8 @@
     }
   },
   "hooks": {
-    "before:init": [
-      "npm run lint"
-    ],
-    "after:bump": [
-      "npm run build:production"
-    ],
+    "before:init": ["npm run lint"],
+    "after:bump": ["npm run build:production"],
     "after:git:release": "echo 'Git release completed successfully!'",
     "before:github:release": "echo 'Creating GitHub release...'",
     "after:github:release": "echo 'GitHub release created successfully!'",

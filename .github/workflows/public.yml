@@ -1,0 +1,125 @@
+name: Public
+
+on:
+  workflow_dispatch:
+    inputs:
+      version-type:
+        description: '版本类型'
+        required: true
+        default: 'patch'
+        type: choice
+        options: [patch, minor, major, alpha, beta]
+
+env:
+  NODE_VERSION: '22.20.0'
+  PNPM_VERSION: '10.28.0'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: public-release
+  cancel-in-progress: false
+
+jobs:
+  build-assets:
+    name: Build release assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build production dist
+        run: pnpm run build:production
+
+      - name: Package dist archives
+        run: |
+          mkdir -p dist
+          tar -czf dist/vue3-vite7-app-dist.tar.gz -C dist .
+          (cd dist && zip -r vue3-vite7-app-dist.zip .)
+          ls -lh dist
+
+      - name: Build docker tar artifacts
+        run: pnpm run build:artifacts-docker
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-assets
+          path: dist/
+          retention-days: 1
+
+      - name: Upload docker artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-assets
+          path: artifacts/
+          retention-days: 1
+
+  release:
+    needs: build-assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-assets
+          path: dist
+
+      - name: Download docker artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-assets
+          path: artifacts
+
+      - name: Verify release assets
+        run: |
+          echo "dist assets:"
+          ls -lh dist || true
+          echo "docker assets:"
+          ls -lh artifacts || true
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run release-it
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION_TYPE="${{ github.event.inputs.version-type }}"
+
+          if [ "$VERSION_TYPE" = "alpha" ] || [ "$VERSION_TYPE" = "beta" ]; then
+            pnpm exec release-it --preRelease="$VERSION_TYPE" --ci
+          else
+            pnpm exec release-it "$VERSION_TYPE" --ci
+          fi
