@@ -45,9 +45,15 @@ jobs:
 
       - name: Package dist archives
         run: |
-          mkdir -p dist
-          tar -czf dist/vue3-vite7-app-dist.tar.gz -C dist .
-          (cd dist && zip -r vue3-vite7-app-dist.zip .)
+          test -d dist
+          rm -f dist/vue3-vite7-app-dist.tar.gz dist/vue3-vite7-app-dist.zip
+
+          # 先输出到 dist 目录外，避免“file changed as we read it”
+          tar -czf vue3-vite7-app-dist.tar.gz -C dist .
+          (cd dist && zip -r ../vue3-vite7-app-dist.zip .)
+
+          mv vue3-vite7-app-dist.tar.gz dist/
+          mv vue3-vite7-app-dist.zip dist/
           ls -lh dist
 
       - name: Build docker tar artifacts
