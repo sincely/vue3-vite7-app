@@ -16,6 +16,8 @@
 - [构建参数](#构建参数)
 - [npm 脚本速查](#npm-脚本速查)
 - [使用构建脚本](#使用构建脚本)
+- [使用 build-image.js](#使用-build-imagejs)
+- [使用编译后的镜像（tar）](#使用编译后的镜像tar)
 - [Nginx 配置说明](#nginx-配置说明)
 - [推送镜像到仓库](#推送镜像到仓库)
 - [常用命令速查](#常用命令速查)
@@ -33,9 +35,8 @@
  .dockerignore                     # 构建上下文排除规则
  nginx/
     nginx.conf                    # 自定义 Nginx 配置
- scripts/
-     docker-build-linux.sh         # Linux/macOS 构建脚本
-     docker-build-windows.ps1     # Windows PowerShell 构建脚本
+ script/
+   build-artifacts-docker.sh     # 一键构建 test/prod 并导出 tar
 ```
 
 ---
@@ -178,6 +179,7 @@ docker build --build-arg NODE_VERSION=20-alpine --build-arg BUILD_MODE=productio
 | `pnpm docker:build:dev` | `docker build -f Dockerfile.dev -t vue3-vite7-app:dev .` | 构建开发镜像 |
 | `pnpm docker:build:test` | `docker build --build-arg BUILD_MODE=test -t vue3-vite7-app:test .` | 构建测试镜像 |
 | `pnpm docker:build:prod` | `docker build --build-arg BUILD_MODE=production -t vue3-vite7-app:prod .` | 构建生产镜像 |
+| `pnpm build:artifacts-docker` | `bash script/build-artifacts-docker.sh` | 构建 test/prod 镜像并导出 tar 到 `artifacts/` |
 | `pnpm docker:run:dev` | `docker run -it --rm -p 5173:5173 -v "%cd%:/app" ...` | 启动开发容器（Volume 热更新） |
 | `pnpm docker:run:test` | `docker run -d --rm -p 8080:80 ...` | 启动测试容器（后台，端口 8080） |
 | `pnpm docker:run:prod` | `docker run -d -p 80:80 --restart=unless-stopped ...` | 启动生产容器（后台，端口 80） |
@@ -191,45 +193,98 @@ docker build --build-arg NODE_VERSION=20-alpine --build-arg BUILD_MODE=productio
 
 ## 使用构建脚本
 
-如需高级选项（跨平台编译、推送镜像到仓库、Tag 管理等），使用 `scripts/` 目录下的构建脚本。
-
-#### Windows PowerShell
-
-```powershell
-# 构建开发镜像
-.\scripts\docker-build-windows.ps1 -Mode dev
-
-# 构建测试镜像，指定 Tag
-.\scripts\docker-build-windows.ps1 -Mode test -Tag v1.0.0
-
-# 构建生产镜像
-.\scripts\docker-build-windows.ps1 -Mode production -Tag v1.2.0
-
-# 禁用缓存强制重建
-.\scripts\docker-build-windows.ps1 -Mode production -NoCache
-
-# 指定目标平台（交叉编译）
-.\scripts\docker-build-windows.ps1 -Mode production -Platform linux/amd64
-
-# 构建并推送到私有仓库
-.\scripts\docker-build-windows.ps1 -Mode production -Tag v1.2.0 -Push -Registry "registry.cn-hangzhou.aliyuncs.com/myorg/vue3-app"
-```
-
->  首次运行 `.ps1` 遇到执行策略限制：
-> ```powershell
-> Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-> ```
-
-#### Linux / macOS
+当前项目提供一键构建并导出镜像脚本：`script/build-artifacts-docker.sh`。
 
 ```bash
-chmod +x scripts/docker-build-linux.sh
+# 构建 test / prod 镜像，并导出到 artifacts/ 目录
+pnpm build:artifacts-docker
+```
 
-bash scripts/docker-build-linux.sh -m dev
-bash scripts/docker-build-linux.sh -m test -t v1.0.0
-bash scripts/docker-build-linux.sh -m production -t v1.2.0
-bash scripts/docker-build-linux.sh -m production --no-cache
-bash scripts/docker-build-linux.sh -m production -t v1.2.0 -p -r registry.cn-hangzhou.aliyuncs.com/myorg/vue3-app
+执行后会生成：
+
+```bash
+artifacts/vue3-vite7-app-test.tar
+artifacts/vue3-vite7-app-prod.tar
+```
+
+如需代理，可在执行前设置 `PROXY_ARG`（可选）：
+
+```bash
+PROXY_ARG="--build-arg HTTP_PROXY=http://127.0.0.1:7890 --build-arg HTTPS_PROXY=http://127.0.0.1:7890" pnpm build:artifacts-docker
+```
+
+---
+
+## 使用 build-image.js
+
+`build-image.js` 已同步为新行为：支持 `prod` 简写，生产镜像标签统一为 `:prod`，并默认导出到 `artifacts/` 目录。
+
+```bash
+# 查看帮助
+node build-image.js --help
+
+# 开发环境（不导出 tar）
+node build-image.js dev
+
+# 测试环境（导出 artifacts/vue3-vite7-app-test.tar）
+node build-image.js test
+
+# 生产环境（等价写法）
+node build-image.js production
+node build-image.js prod
+
+# 仅构建，不导出 tar
+node build-image.js prod --no-export
+```
+
+运行完成后，建议直接使用：
+
+```bash
+pnpm docker:run:test
+pnpm docker:run:prod
+pnpm docker:logs:test
+pnpm docker:logs:prod
+```
+
+---
+
+## 使用编译后的镜像（tar）
+
+### 本机直接运行（无需 load）
+
+```bash
+# 测试环境
+docker run -d --rm -p 8080:80 -e TZ=Asia/Shanghai --name vue3-vite7-app-test vue3-vite7-app:test
+
+# 生产环境
+docker run -d -p 80:80 -e TZ=Asia/Shanghai --restart=unless-stopped --name vue3-vite7-app-prod vue3-vite7-app:prod
+```
+
+### 在其他服务器运行（先 load tar）
+
+```bash
+# 1) 上传 tar 到目标服务器后，加载镜像
+docker load -i vue3-vite7-app-test.tar
+docker load -i vue3-vite7-app-prod.tar
+
+# 2) 启动容器
+docker run -d --rm -p 8080:80 -e TZ=Asia/Shanghai --name vue3-vite7-app-test vue3-vite7-app:test
+docker run -d -p 80:80 -e TZ=Asia/Shanghai --restart=unless-stopped --name vue3-vite7-app-prod vue3-vite7-app:prod
+```
+
+### 常用运维命令
+
+```bash
+# 查看容器
+docker ps
+
+# 查看日志
+docker logs -f vue3-vite7-app-test
+docker logs -f vue3-vite7-app-prod
+
+# 停止容器
+docker stop vue3-vite7-app-test
+docker stop vue3-vite7-app-prod
 ```
 
 ---
@@ -307,13 +362,13 @@ docker push registry.cn-hangzhou.aliyuncs.com/<命名空间>/vue3-vite7-app:late
 ## 常用命令速查
 
 ```bash
-#  构建 
+#  构建
 docker build -t vue3-vite7-app:prod .                                        # 生产镜像
 docker build --build-arg BUILD_MODE=test -t vue3-vite7-app:test .            # 测试镜像
 docker build -f Dockerfile.dev -t vue3-vite7-app:dev .                       # 开发镜像
 docker build --no-cache -t vue3-vite7-app:prod .                             # 禁用缓存
 
-#  运行 
+# 运行
 # 测试（后台，自动清理）
 docker run -d --rm -p 8080:80 -e TZ=Asia/Shanghai \
   --name vue3-vite7-app-test vue3-vite7-app:test
@@ -334,7 +389,7 @@ docker run -it --rm -p 5173:5173 `
   -e TZ=Asia/Shanghai -e VITE_CJS_IGNORE_WARNING=true -e NODE_ENV=development `
   --name vue3-vite7-app-dev vue3-vite7-app:dev
 
-#  容器操作 
+#  容器操作
 docker ps                                                    # 查看运行中的容器
 docker ps -a                                                 # 查看所有容器
 docker stop vue3-vite7-app-prod                              # 停止容器
@@ -343,13 +398,13 @@ docker exec -it vue3-vite7-app-prod sh                       # 进入容器 Shel
 docker logs -f vue3-vite7-app-prod                           # 实时查看日志
 docker stats vue3-vite7-app-prod                             # 查看资源占用
 
-#  镜像管理 
+#  镜像管理
 docker images                                                # 列出本地镜像
 docker rmi vue3-vite7-app:prod                               # 删除镜像
 docker image prune -f                                        # 清理悬空镜像
 docker system prune -f                                       # 清理所有未用资源（谨慎）
 
-#  健康检查 
+#  健康检查
 docker inspect --format='{{.State.Health.Status}}' vue3-vite7-app-prod
 ```
 

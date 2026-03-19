@@ -67,10 +67,6 @@ RUN chown -R nginx:nginx /usr/share/nginx/html \
 # EXPOSE不会实际开放端口，单纯的语法，不写也行（NGINX默认就是80端口）
 EXPOSE 80
 
-# 健康检查：每 30 秒检测一次，确保 Nginx 正常响应
-# HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-#     CMD wget -qO- http://localhost:80/ || exit 1
-
 # 启动nginx  -g是全局配置命令  daemon off关闭后台运行模式
 # 能够确保 nginx 前台运行，避免容器启动后立即退出
 # 这个cmd指令，会被存放在镜像文件中，当镜像被丢到服务器上后
