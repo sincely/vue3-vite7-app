@@ -1,15 +1,19 @@
+# 根目录标记，告诉编辑器停止向上查找配置文件
 root = true
 
+# 针对所有文件的通用规则
 [*]
-indent_style = space
-end_of_line = lf
-charset = utf-8
-trim_trailing_whitespace = true
-insert_final_newline = false
+indent_style = space                 # 缩进使用空格
+end_of_line = lf                      # 换行符使用 LF（推荐跨平台）
+charset = utf-8                        # 文件编码 UTF-8
+trim_trailing_whitespace = true        # 保存时自动去除行尾空格
+insert_final_newline = false           # 不在文件末尾追加空行（根据需要调整）
 
+# Markdown 文件特殊规则
 [*.md]
-max_line_length = off
-trim_trailing_whitespace = false
+max_line_length = off                   # 不检查行长度（Markdown 换行通常不截断）
+trim_trailing_whitespace = false        # 保留行尾空格（用于 Markdown 换行语法）
 
+# 前端开发常用文件：缩进2空格
 [*.{ts,js,vue,css}]
-indent_size = 2
+indent_size = 2                          # 缩进2个空格
