@@ -51,11 +51,16 @@ export default defineConfig(({ mode, command }) => {
           chunkFileNames: 'static/js/[name]-[hash].js',
           // 自定义构建结果中的静态资源名称
           assetFileNames: (assetInfo) => {
-            if (assetInfo.name.endsWith('.css')) {
+            const assetName =
+              (assetInfo.names && assetInfo.names[0]) ||
+              (assetInfo.originalFileNames && assetInfo.originalFileNames[0]) ||
+              ''
+
+            if (assetName.endsWith('.css')) {
               return 'css/[name]-[hash].css'
             }
             const imgExts = ['.png', '.jpg', '.jpeg', '.webp', '.svg', '.gif', '.icon']
-            if (imgExts.some((ext) => assetInfo.name.endsWith(ext))) {
+            if (imgExts.some((ext) => assetName.endsWith(ext))) {
               return 'imgs/[name]-[hash][ext]'
             }
             return 'assets/[name]-[hash].[ext]'
