@@ -7,7 +7,7 @@ import router from '@/router' // 路由
 
 import { setupIcon } from './plugins' // 全局注册antd图标
 import { setupStore } from './store' // 状态管理
-
+import '@/utils/update' // 版本更新检测
 async function setupApp() {
   const app = createApp(App)
   setupIcon(app)
