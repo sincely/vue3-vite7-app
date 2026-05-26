@@ -47,3 +47,12 @@ coverage/
 # 临时文件
 tmp/
 temp/
+
+
+# Nuxt dev/build outputs
+.cache
+.data
+.nuxt
+.nitro
+.output
+dist

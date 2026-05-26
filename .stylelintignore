@@ -33,3 +33,4 @@ src/assets/*
 src/icons/*
 .husky
 .env
+.vscode

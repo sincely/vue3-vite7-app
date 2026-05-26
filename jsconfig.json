@@ -9,11 +9,10 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*", "./mock/*"]
     }
   },
-  "include": ["mock/*.js","src/**/*.js", "src/**/*.vue", "src/**/*.ts", "src/**/*.d.ts", "src/**/*"],
+  "include": ["mock/*.js", "src/**/*.js", "src/**/*.vue", "src/**/*.ts", "src/**/*.d.ts", "src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
