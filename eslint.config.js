@@ -13,7 +13,33 @@ export default [
   {
     ...pluginJs.configs.recommended,
     // 忽略特定文件和目录
-    ignores: ['**/.*', 'dist/**/*', '*.d.ts', 'public/*', 'src/assets/**'],
+    ignores: [
+      '**/.*',
+      'dist/**/*',
+      '*.d.ts',
+      'public/*',
+      'src/assets/**',
+      '**/dist',
+      './src/main.ts',
+      '.vscode',
+      '.idea',
+      '*.sh',
+      '**/node_modules',
+      '*.md',
+      '*.woff',
+      '*.ttf',
+      'yarn.lock',
+      'package-lock.json',
+      'pnpm-lock.yaml',
+      '.local',
+      'public/**',
+      'docs/**',
+      '**/output',
+      '.husky',
+      'bin/**',
+      'src/icons/**',
+      'Dockerfile'
+    ],
     // 定义全局变量
     languageOptions: {
       globals: {
@@ -29,7 +55,10 @@ export default [
     },
     rules: {
       ...configPrettier.rules,
-      ...pluginPrettier.configs.recommended.rules
+      ...pluginPrettier.configs.recommended.rules,
+      // simple-import-sort 排序规则
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error'
     }
   },
   {
@@ -100,8 +129,6 @@ export default [
       'no-useless-escape': 0,
       // 禁用 continue 语句
       'no-continue': 0,
-      // 强制使用一致的缩进
-      indent: ['error', 2, { SwitchCase: 1 }],
       // 强制使用骆驼拼写法命名约定
       camelcase: 0,
       // 强制类方法使用 this
@@ -116,47 +143,16 @@ export default [
       'spaced-comment': 'warn',
       // 要求 return 语句要么总是指定返回的值，要么不指定
       'consistent-return': 0,
-      // 强制switch要有default分支
-      'default-case': 2,
-      // 强制剩余和扩展运算符及其表达式之间有空格
-      'rest-spread-spacing': 'error',
       // 要求使用 const 声明那些声明后不再被修改的变量
       'prefer-const': 'error',
       // 强制箭头函数的箭头前后使用一致的空格
       'arrow-spacing': 'error',
       // 只强制对象解构，不强制数组解构
       'prefer-destructuring': ['error', { object: true, array: false }],
-      // 强制在注释中 // 或 /* 使用一致的空格
-      'spaced-comment': 'warn'
+      // 强制switch要有default分支
+      'default-case': 2,
+      // 强制剩余和扩展运算符及其表达式之间有空格
+      'rest-spread-spacing': 'error'
     }
-  },
-  // 忽略文件
-  {
-    ignores: [
-      '**/dist',
-      './src/main.ts',
-      '.vscode',
-      '.idea',
-      '.d.ts',
-      '*.sh',
-      '**/node_modules',
-      '*.md',
-      '*.woff',
-      '*.woff',
-      '*.ttf',
-      'yarn.lock',
-      'package-lock.json',
-      'pnpm-lock.yaml',
-      '.local',
-      '/public',
-      '/docs',
-      '**/output',
-      '.husky',
-      '.local',
-      '/bin',
-      '/src/assets',
-      '/src/icons',
-      'Dockerfile'
-    ]
   }
 ]
