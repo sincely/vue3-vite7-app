@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 
 
+## [0.0.4](https://github.com/sincely/vue3-vite7-app/compare/v0.0.3...v0.0.4) (2026-10-08)
+
+### ✨ Features
+
+* 添加版本生成脚本和版本检测功能，更新构建脚本以自动生成版本文件 ([d128e5e](https://github.com/sincely/vue3-vite7-app/commit/d128e5e9aa267efc49d0df336fa9c23365b3ac45))
+
+### 🐞 Bug Fixes
+
+* 更新 ESLint 配置，增加忽略文件列表和排序规则 ([fc71233](https://github.com/sincely/vue3-vite7-app/commit/fc71233a7a5dba1b7f1ac3d1a51460963b0805bb))
+* 移除不必要的 Docker 相关构建步骤和上传配置 ([ae11bea](https://github.com/sincely/vue3-vite7-app/commit/ae11beaf7f65242f5f6f6598df148feeb7ac9d15))
+* 调整模块导入顺序，优化代码结构 ([2208786](https://github.com/sincely/vue3-vite7-app/commit/2208786197db80aaa7297ede93ebda66a581ae21))
+
+### 🤖 Continuous Integration
+
+* 工具修改 ([cec9f84](https://github.com/sincely/vue3-vite7-app/commit/cec9f8400f4d9568dc33c6bd064b59653cbb3e53))
+
 ## [0.0.3](https://github.com/sincely/vue3-vite7-app/compare/v0.0.2...v0.0.3) (2026-03-19)
 
 ### ✨ Features
