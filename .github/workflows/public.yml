@@ -56,21 +56,11 @@ jobs:
           mv vue3-vite7-app-dist.zip dist/
           ls -lh dist
 
-      - name: Build docker tar artifacts
-        run: pnpm run build:artifacts-docker
-
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
         with:
           name: dist-assets
           path: dist/
-          retention-days: 1
-
-      - name: Upload docker artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-assets
-          path: artifacts/
           retention-days: 1
 
   release:
@@ -100,18 +90,10 @@ jobs:
           name: dist-assets
           path: dist
 
-      - name: Download docker artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: docker-assets
-          path: artifacts
-
       - name: Verify release assets
         run: |
           echo "dist assets:"
           ls -lh dist || true
-          echo "docker assets:"
-          ls -lh artifacts || true
 
       - name: Configure Git
         run: |
