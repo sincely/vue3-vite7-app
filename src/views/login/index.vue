@@ -62,9 +62,10 @@
 </template>
 
 <script setup>
+import gsap from 'gsap'
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import gsap from 'gsap'
+
 import { useUserStore } from '@/store/modules/user'
 import { showToast } from '@/utils/toast'
 

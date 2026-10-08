@@ -1,10 +1,11 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
-import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
+import NProgress from 'nprogress'
+import { createRouter, createWebHashHistory } from 'vue-router'
+
 import layouts from '@/layouts/index.vue'
-import home from '@/views/home/index.vue'
 import { useUserStore } from '@/store/modules/user'
+import home from '@/views/home/index.vue'
 
 const files = import.meta.glob('./modules/*.js', {
   eager: true
